@@ -91,6 +91,9 @@ namespace Osmium {
             void final() const {
             }
 
+            void filepos(off_t) const {
+            }
+
         }; // class Base
 
         /**
@@ -152,6 +155,10 @@ namespace Osmium {
 
             void final() const {
                 m_handler->final();
+            }
+
+            void filepos(off_t pos) const {
+                m_handler->filepos(pos);
             }
 
         private:

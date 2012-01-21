@@ -81,6 +81,8 @@ namespace Osmium {
                         if (result < 0) {
                             exit(1);
                         }
+                        this->m_filepos += result;
+                        this->call_filepos_handler();
                         done = (result == 0);
                         if (XML_ParseBuffer(parser, result, done) == XML_STATUS_ERROR) {
                             XML_Error errorCode = XML_GetErrorCode(parser);

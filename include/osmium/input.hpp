@@ -176,6 +176,10 @@ namespace Osmium {
                 m_handler.final();
             }
 
+            void call_filepos_handler() const {
+                m_handler.filepos(m_filepos);
+            }
+
             Osmium::OSM::Meta& meta() {
                 return m_meta;
             }
@@ -252,6 +256,7 @@ namespace Osmium {
             shared_ptr<Osmium::OSM::Node>     m_node;
             shared_ptr<Osmium::OSM::Way>      m_way;
             shared_ptr<Osmium::OSM::Relation> m_relation;
+            off_t m_filepos;
 
         }; // class Base
 
