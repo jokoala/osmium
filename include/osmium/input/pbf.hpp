@@ -84,6 +84,8 @@ namespace Osmium {
                     while (read_blob_header()) {
                         const array_t a = read_blob(m_pbf_blob_header.datasize());
 
+                        this->call_filepos_handler();
+
                         if (m_pbf_blob_header.type() == "OSMData") {
                             if (!m_pbf_primitive_block.ParseFromArray(a.first, a.second)) {
                                 throw std::runtime_error("Failed to parse PrimitiveBlock.");
@@ -393,6 +395,7 @@ namespace Osmium {
                         return false; // EOF
                     }
                     offset += nread;
+                    this->m_filepos += nread;
                 }
 
                 const int size = convert_from_network_byte_order(size_in_network_byte_order);
@@ -409,6 +412,7 @@ namespace Osmium {
                         throw std::runtime_error("failed to read BlobHeader");
                     }
                     offset += nread;
+                    this->m_filepos += nread;
                 }
 
                 if (!m_pbf_blob_header.ParseFromArray(m_input_buffer, size)) {
@@ -433,6 +437,7 @@ namespace Osmium {
                         throw std::runtime_error("failed to read blob");
                     }
                     offset += nread;
+                    this->m_filepos += nread;
                 }
                 if (!m_pbf_blob.ParseFromArray(m_input_buffer, size)) {
                     throw std::runtime_error("failed to parse blob");
