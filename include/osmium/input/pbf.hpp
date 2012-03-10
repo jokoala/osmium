@@ -76,7 +76,7 @@ namespace Osmium {
                     while (read_blob_header()) {
                         const array_t a = read_blob(m_pbf_blob_header.datasize());
 
-                        this->call_filepos_handler();
+                        this->call_progress_handler();
 
                         if (m_pbf_blob_header.type() == "OSMData") {
                             if (!m_pbf_primitive_block.ParseFromArray(a.first, a.second)) {

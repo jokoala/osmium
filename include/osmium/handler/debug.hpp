@@ -105,6 +105,10 @@ namespace Osmium {
                 std::cout << "final\n";
             }
 
+            void progress(off_t pos) const {
+                std::cout << "file position " <<pos <<"\n";
+            }
+
         private:
 
             bool m_has_multiple_object_versions;
