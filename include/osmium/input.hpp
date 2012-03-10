@@ -156,8 +156,8 @@ namespace Osmium {
                 m_handler.final();
             }
 
-            void call_filepos_handler() const {
-                m_handler.filepos(m_filepos);
+            void call_progress_handler() const {
+                m_handler.progress(m_filepos);
             }
 
             Osmium::OSM::Meta& meta() {

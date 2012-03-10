@@ -91,7 +91,7 @@ namespace Osmium {
                             throw std::runtime_error("read error");
                         }
                         this->m_filepos += result;
-                        this->call_filepos_handler();
+                        this->call_progress_handler();
                         done = (result == 0);
                         if (XML_ParseBuffer(parser, result, done) == XML_STATUS_ERROR) {
                             XML_Error errorCode = XML_GetErrorCode(parser);

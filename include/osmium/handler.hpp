@@ -111,7 +111,7 @@ namespace Osmium {
             void final() const {
             }
 
-            void filepos(off_t) const {
+            void progress(off_t) const {
             }
 
         }; // class Base
@@ -189,8 +189,8 @@ namespace Osmium {
                 return m_next_handler;
             }
 
-            void filepos(off_t pos) const {
-                m_handler->filepos(pos);
+            void progress(off_t pos) const {
+                m_handler->progress(pos);
             }
 
         private:
