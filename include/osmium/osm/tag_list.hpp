@@ -91,6 +91,16 @@ namespace Osmium {
                 m_tags.push_back(Tag(key, value));
             }
 
+            bool delete_key(const char* key) {
+                for (iterator it = begin(); it != end(); ++it) {
+                    if (!strcmp(it->key(), key)) {
+                        m_tags.erase(it);
+                        return true;
+                    }
+                }
+                return false;
+            }
+
             const char* get_tag_by_key(const char* key) const {
                 for (const_iterator it = begin(); it != end(); ++it) {
                     if (!strcmp(it->key(), key)) {
