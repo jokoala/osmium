@@ -344,7 +344,7 @@ namespace Osmium {
             /**
              * This is the handler class for the second pass of the Assembler.
              */
-            class HandlerPass2 {
+            class HandlerPass2 : public Osmium::Handler::Base {
 
                 TAssembler& m_assembler;
 

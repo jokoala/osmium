@@ -183,14 +183,14 @@ namespace Osmium {
                 m_next_handler.set_debug_level(debug);
             }
 
+            void progress(off_t pos) const {
+                m_next_handler.progress(pos);
+            }
+
         protected:
 
             THandler& next_handler() const {
                 return m_next_handler;
-            }
-
-            void progress(off_t pos) const {
-                m_handler->progress(pos);
             }
 
         private:
@@ -278,6 +278,10 @@ namespace Osmium {
                 m_handler2.set_debug_level(debug);
             }
 
+            void progress(off_t pos) const {
+                m_handler1.progress(pos);
+                m_handler2.progress(pos);
+            }
         private:
 
             THandler1& m_handler1;
