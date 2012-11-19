@@ -32,7 +32,9 @@ namespace Osmium {
 
     namespace Handler {
 
-        /**
+        /** 
+         * @brief Show a progress report on processing.
+         *
          * Simple handler that shows progress on terminal by counting
          * the number of nodes, ways, and relations already read and
          * printing those counts to stdout.
