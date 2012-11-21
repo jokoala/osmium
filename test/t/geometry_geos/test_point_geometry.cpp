@@ -8,6 +8,7 @@
 #include <osmium/geometry/point.hpp>
 #include <osmium/geometry/geos.hpp>
 
+BOOST_AUTO_TEST_SUITE(GEOS)
 BOOST_AUTO_TEST_SUITE(PointGeometry)
 
 BOOST_AUTO_TEST_CASE(instantiation) {
@@ -29,4 +30,4 @@ BOOST_AUTO_TEST_CASE(geos_geometry) {
 }
 
 BOOST_AUTO_TEST_SUITE_END()
-
+BOOST_AUTO_TEST_SUITE_END()
