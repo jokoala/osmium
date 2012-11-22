@@ -265,7 +265,7 @@ namespace Osmium {
              * XML encoding, compressed with gzip.
              */
             static FileEncoding* XMLgz() {
-                static FileEncoding instance(".gz", "gzip", "gzcat", false);
+                static FileEncoding instance(".gz", "gzip", "zcat", false);
                 return &instance;
             }
 
@@ -323,7 +323,7 @@ namespace Osmium {
             if (pid == 0) { // child
                 // close all file descriptors except one end of the pipe
                 for (int i=0; i < 32; ++i) {
-                    if (i != pipefd[1-input]) {
+                    if ((i != pipefd[1-input]) ) {
                         ::close(i);
                     }
                 }
