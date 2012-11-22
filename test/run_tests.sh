@@ -32,7 +32,7 @@ TESTS_FAILED=0
 TESTS_OK=0
 
 CFLAGS="$(geos-config --cflags) $(gdal-config --cflags)"
-LIBS="$(geos-config --libs) $(gdal-config --libs) -lboost_regex"
+LIBS="$(geos-config --libs) $(gdal-config --libs) -lboost_regex -lboost_iostreams"
 
 test_file () {
     FILES="test_main.o test_utils.o $1"
