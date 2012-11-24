@@ -86,7 +86,7 @@ namespace Osmium {
                             throw std::runtime_error("out of memory");
                         }
 
-                        int result = read(this->fd(), buffer, c_buffer_size);
+                        int result = this->file().read_input(buffer, c_buffer_size);
                         if (result < 0) {
                             throw std::runtime_error("read error");
                         }

@@ -98,6 +98,15 @@ void read_from_fd_and_compare(int fd, std::string& expected_content) {
     BOOST_CHECK_EQUAL(std::string(buffer, read_length), expected_content);
 }
 
+void read_by_method_and_compare( Osmium::OSMFile &target, std::string& expected_content) {
+    const int buf_length = 1000;
+    char buffer[buf_length];
+
+    int read_length = target.read_input(buffer, buf_length-1);
+
+    BOOST_CHECK_EQUAL(std::string(buffer, read_length), expected_content);
+}
+
 /* Test basic file input operations:
  * Open an input file and check if correct content ist returned
  */
@@ -110,7 +119,7 @@ BOOST_AUTO_TEST_CASE( read_from_xml_file ) {
     Osmium::OSMFile file("test.osm");
     file.open_for_input();
 
-    read_from_fd_and_compare(file.fd(), example_file_content);
+    read_by_method_and_compare(file, example_file_content);
     file.close();
 }
 
@@ -129,7 +138,7 @@ BOOST_AUTO_TEST_CASE( read_from_xml_gz_file ) {
 
     Osmium::OSMFile file("test.osm.gz");
     file.open_for_input();
-    read_from_fd_and_compare(file.fd(), example_file_content);
+    read_by_method_and_compare(file, example_file_content);
     file.close();
 }
 
@@ -148,7 +157,7 @@ BOOST_AUTO_TEST_CASE( read_from_xml_bz2_file ) {
 
     Osmium::OSMFile file("test.osm.bz2");
     file.open_for_input();
-    read_from_fd_and_compare(file.fd(), example_file_content);
+    read_by_method_and_compare(file, example_file_content);
     file.close();
 }
 

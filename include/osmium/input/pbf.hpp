@@ -388,7 +388,7 @@ namespace Osmium {
                 unsigned char size_in_network_byte_order[4];
                 int offset = 0;
                 while (offset < static_cast<int>(sizeof(size_in_network_byte_order))) {
-                    int nread = read(this->fd(), size_in_network_byte_order + offset, sizeof(size_in_network_byte_order) - offset);
+                    int nread = this->file().read_input(size_in_network_byte_order + offset, sizeof(size_in_network_byte_order) - offset);
                     if (nread < 0) {
                         throw std::runtime_error("read error");
                     } else if (nread == 0) {
@@ -407,7 +407,7 @@ namespace Osmium {
 
                 offset = 0;
                 while (offset < size) {
-                    int nread = read(this->fd(), m_input_buffer + offset, size - offset);
+                    int nread = this->file().read_input(m_input_buffer + offset, size - offset);
                     if (nread < 1) {
                         throw std::runtime_error("failed to read BlobHeader");
                     }
@@ -432,7 +432,7 @@ namespace Osmium {
                 }
                 int offset = 0;
                 while (offset < size) {
-                    int nread = read(this->fd(), m_input_buffer + offset, size - offset);
+                    int nread = this->file().read_input(m_input_buffer + offset, size - offset);
                     if (nread < 1) {
                         throw std::runtime_error("failed to read blob");
                     }
