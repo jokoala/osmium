@@ -153,6 +153,15 @@ namespace Osmium {
                 }
 
                 void way(const shared_ptr<Osmium::OSM::Way const>& way) const {
+                    m_cur_object = way;
+                    yield();
+                    m_cur_object.reset();
+                }
+
+                void relation(const shared_ptr<Osmium::OSM::Relation const>& rel) const {
+                    m_cur_object = rel;
+                    yield();
+                    m_cur_object.reset();
                 }
 
                 ///@}
