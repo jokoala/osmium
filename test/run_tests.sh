@@ -41,8 +41,8 @@ TESTS_COMPILE_ERROR=0
 TESTS_FAILED=0
 TESTS_OK=0
 
-CFLAGS="$(geos-config --cflags) $(gdal-config --cflags)"
-LIBS="$(geos-config --libs) $(gdal-config --libs) -lboost_regex -lboost_iostreams"
+CFLAGS="$(geos-config --cflags) $(gdal-config --cflags) $CFLAGS"
+LIBS="$(geos-config --libs) $(gdal-config --libs) -lboost_regex -lboost_iostreams -lboost_filesystem -lboost_system"
 
 test_file () {
     FILES="test_main.o test_utils.o $1"
@@ -54,7 +54,7 @@ test_file () {
         echo "$DARKRED[COMPILE ERROR]$NORM"
         TESTS_COMPILE_ERROR=$(($TESTS_COMPILE_ERROR+1))
         echo "=========================="
-        echo $COMPILE $FILES $CFLAGS $LIBS -lboost_unit_test_framework
+        echo $COMPILE $FILES $CFLAGS $LIBS $LDFLAGS -lboost_unit_test_framework
         echo "--------------------------"
         echo "$output"
         echo "=========================="
