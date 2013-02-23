@@ -21,47 +21,8 @@ std::string example_file_content("Lorem ipsum dolor sit amet, consetetur sadipsc
 /* Test scenarios for OSMFile objects
  */
 
+#include <temp_file_fixture.hpp>
 
-boost::filesystem::path tempdir_path;
-
-/* TempDirFixture:  Prepare a temp directory and clean up afterwards
- */
-struct TempDirFixture {
-    TempDirFixture() {
-        tempdir_path = boost::filesystem::temp_directory_path() / boost::filesystem::unique_path();
-        std::cout << "create " <<tempdir_path <<std::endl;
-        boost::filesystem::create_directory(tempdir_path);
-    }
-
-    ~TempDirFixture() {
-        std::cout << "remove " <<tempdir_path <<std::endl;
-        boost::filesystem::remove_all(tempdir_path);
-    }
-};
-
-struct TempFileFixture {
-    TempFileFixture(std::string name) {
-        path = tempdir_path / name;
-    }
-
-    ~TempFileFixture() {
-        std::cout <<"remove " <<path <<std::endl;
-        boost::filesystem::remove(path);
-    }
-
-    operator const char*() const {
-        return path.c_str();
-    }
-
-    operator const std::string&() const {
-        return path.native();
-    }
-
-    boost::filesystem::path path;
-};
-
-
-BOOST_GLOBAL_FIXTURE(TempDirFixture)
 
 BOOST_AUTO_TEST_SUITE(OSMFile_Output)
 /* Helper function
