@@ -49,6 +49,14 @@ struct TempFileFixture {
         boost::filesystem::remove(path);
     }
 
+    operator const char*() const {
+        return path.c_str();
+    }
+
+    operator const std::string&() const {
+        return path.native();
+    }
+
     boost::filesystem::path path;
 };
 
@@ -72,7 +80,7 @@ void compare_file_content(std::istream* inputfile, std::string& expected_content
 BOOST_AUTO_TEST_CASE( write_to_xml_output_file ) {
     TempFileFixture test_osm("test.osm");
 
-    Osmium::OSMFile file(test_osm.path.native());
+    Osmium::OSMFile file(test_osm);
     BOOST_REQUIRE_EQUAL(file.fd(), -1);
 
     file.open_for_output();
@@ -82,7 +90,7 @@ BOOST_AUTO_TEST_CASE( write_to_xml_output_file ) {
     file.close();
     BOOST_REQUIRE_EQUAL(file.fd(), -1);
 
-    compare_file_content(new std::ifstream(test_osm.path.c_str(), std::ios::binary), example_file_content);
+    compare_file_content(new std::ifstream(test_osm, std::ios::binary), example_file_content);
 }
 
 
@@ -93,12 +101,12 @@ BOOST_AUTO_TEST_CASE( write_to_xml_output_file ) {
 BOOST_AUTO_TEST_CASE( write_to_xml_gz_output_file ) {
     TempFileFixture test_osm_gz("test.osm.gz");
 
-    Osmium::OSMFile file(test_osm_gz.path.native());
+    Osmium::OSMFile file(test_osm_gz);
     file.open_for_output();
     write(file.fd(), example_file_content.c_str(), example_file_content.size());
     file.close();
 
-    std::ifstream inputfile(test_osm_gz.path.c_str(), std::ios::binary);
+    std::ifstream inputfile(test_osm_gz, std::ios::binary);
     boost::iostreams::filtering_istream in;
     in.push(boost::iostreams::gzip_decompressor());
     in.push(inputfile);
@@ -113,12 +121,12 @@ BOOST_AUTO_TEST_CASE( write_to_xml_gz_output_file ) {
 BOOST_AUTO_TEST_CASE( write_to_xml_bz2_output_file ) {
     TempFileFixture test_osm_bz2("test.osm.bz2");
 
-    Osmium::OSMFile file(test_osm_bz2.path.native());
+    Osmium::OSMFile file(test_osm_bz2);
     file.open_for_output();
     write(file.fd(), example_file_content.c_str(), example_file_content.size());
     file.close();
 
-    std::ifstream inputfile(test_osm_bz2.path.c_str(), std::ios::binary);
+    std::ifstream inputfile(test_osm_bz2, std::ios::binary);
     boost::iostreams::filtering_istream in;
     in.push(boost::iostreams::bzip2_decompressor());
     in.push(inputfile);
@@ -145,11 +153,11 @@ BOOST_AUTO_TEST_CASE( read_from_xml_file ) {
     TempFileFixture test_osm("test.osm");
 
     // write content
-    std::ofstream outputfile(test_osm.path.c_str(), std::ios::binary);
+    std::ofstream outputfile(test_osm, std::ios::binary);
     outputfile << example_file_content;
     outputfile.close();
 
-    Osmium::OSMFile file(test_osm.path.native());
+    Osmium::OSMFile file(test_osm);
     file.open_for_input();
 
     read_from_fd_and_compare(file.fd(), example_file_content);
@@ -164,14 +172,14 @@ BOOST_AUTO_TEST_CASE( read_from_xml_gz_file ) {
     TempFileFixture test_osm_gz("test.osm.gz");
 
     // write content
-    std::ofstream outputfile(test_osm_gz.path.c_str(), std::ios::binary);
+    std::ofstream outputfile(test_osm_gz, std::ios::binary);
     boost::iostreams::filtering_ostream out;
     out.push(boost::iostreams::gzip_compressor());
     out.push(outputfile);
     out << example_file_content;
     boost::iostreams::close(out);
 
-    Osmium::OSMFile file(test_osm_gz.path.native());
+    Osmium::OSMFile file(test_osm_gz);
     file.open_for_input();
     read_from_fd_and_compare(file.fd(), example_file_content);
     file.close();
@@ -184,14 +192,14 @@ BOOST_AUTO_TEST_CASE( read_from_xml_gz_file ) {
 BOOST_AUTO_TEST_CASE( read_from_xml_bz2_file ) {
     TempFileFixture test_osm_bz2("test.osm.bz2");
     // write content
-    std::ofstream outputfile(test_osm_bz2.path.c_str(), std::ios::binary);
+    std::ofstream outputfile(test_osm_bz2, std::ios::binary);
     boost::iostreams::filtering_ostream out;
     out.push(boost::iostreams::bzip2_compressor());
     out.push(outputfile);
     out << example_file_content;
     boost::iostreams::close(out);
 
-    Osmium::OSMFile file(test_osm_bz2.path.c_str());
+    Osmium::OSMFile file(test_osm_bz2);
     file.open_for_input();
     read_from_fd_and_compare(file.fd(), example_file_content);
     file.close();
