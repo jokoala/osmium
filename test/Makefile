@@ -2,7 +2,7 @@ CXX = g++
 
 CXXFLAGS = -g
 
-CXXFLAGS += -Wall -Wextra -Wdisabled-optimization -pedantic -Wctor-dtor-privacy -Wnon-virtual-dtor -Woverloaded-virtual -Wsign-promo -Wno-long-long
+CXXFLAGS += -Wall -Wextra -Wdisabled-optimization -pedantic -Wctor-dtor-privacy -Wnon-virtual-dtor -Woverloaded-virtual -Wsign-promo -Wno-long-long $(CFLAGS)
 
 CXXFLAGS_GEOS    = $(shell geos-config --cflags)
 CXXFLAGS_LIBXML2 = $(shell xml2-config --cflags)
@@ -23,7 +23,7 @@ LIB_SHAPE  = -lshp $(LIB_GEOS)
 LIB_SQLITE = -lsqlite3
 LIB_XML2   = $(shell xml2-config --libs)
 
-LDFLAGS += $(LIB_EXPAT) $(LIB_PBF) -lboost_unit_test_framework -lboost_regex -lboost_iostreams -lboost_filesystem
+LDFLAGS += $(LIB_EXPAT) $(LIB_PBF) -lboost_unit_test_framework -lboost_regex -lboost_iostreams -lboost_filesystem -lboost_system
 
 SCAN_DIRS = \
 	t/geometry \
