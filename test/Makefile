@@ -23,7 +23,7 @@ LIB_SHAPE  = -lshp $(LIB_GEOS)
 LIB_SQLITE = -lsqlite3
 LIB_XML2   = $(shell xml2-config --libs)
 
-LDFLAGS += $(LIB_EXPAT) $(LIB_PBF) -lboost_unit_test_framework -lboost_regex 
+LDFLAGS += $(LIB_EXPAT) $(LIB_PBF) -lboost_unit_test_framework -lboost_regex -lboost_iostreams -lboost_filesystem
 
 SCAN_DIRS = \
 	t/geometry \
