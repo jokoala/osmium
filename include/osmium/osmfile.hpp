@@ -60,6 +60,14 @@ namespace Osmium {
                 m_errno(e) {
             }
 
+            const char* what() const throw() {
+                std::string result = "Osmium::OSMFile::SystemError: ";
+                result += strerror(system_errno());
+
+                return result.c_str();
+            }
+
+
             /**
              * Get the system errno variable from the system call that caused
              * this exception.
@@ -90,6 +98,15 @@ namespace Osmium {
             }
 
             ~IOError() throw() {
+            }
+
+            virtual const char* what() const throw() {
+                std::string result = "Osmium::OSMFile::IOError: ";
+                result += filename();
+                result += ": ";
+                result += strerror(system_errno());
+
+                return result.c_str();
             }
 
             /**
@@ -123,6 +140,14 @@ namespace Osmium {
 
             ~ArgumentError() throw() {
             }
+
+            const char* what() const throw() {
+                std::string result = "Invalid argument: ";
+                result += value();
+
+                return result.c_str();
+            }
+
 
             const std::string& value() const {
                 return m_value;
@@ -265,7 +290,7 @@ namespace Osmium {
              * XML encoding, compressed with gzip.
              */
             static FileEncoding* XMLgz() {
-                static FileEncoding instance(".gz", "gzip", "gzcat", false);
+                static FileEncoding instance(".gz", "gzip", "zcat", false);
                 return &instance;
             }
 

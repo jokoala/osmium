@@ -8,17 +8,42 @@ boost::filesystem::path tempdir_path;
 
 /* TempDirFixture:  Prepare a temp directory and clean up afterwards
  */
-struct TempDirFixture {
-    TempDirFixture() {
+struct TempBaseDirFixture {
+    TempBaseDirFixture() {
         tempdir_path = boost::filesystem::temp_directory_path() / boost::filesystem::unique_path();
-        std::cout << "create " <<tempdir_path <<std::endl;
         boost::filesystem::create_directory(tempdir_path);
     }
 
-    ~TempDirFixture() {
-        std::cout << "remove " <<tempdir_path <<std::endl;
+    ~TempBaseDirFixture() {
         boost::filesystem::remove_all(tempdir_path);
     }
+};
+
+struct TempDirFixture {
+    TempDirFixture(std::string name) {
+        path = tempdir_path / name;
+    }
+
+    ~TempDirFixture() {
+        boost::filesystem::permissions(path, boost::filesystem::owner_all | boost::filesystem::add_perms);
+        boost::filesystem::remove_all(path);
+    }
+
+
+    void create_ro() {
+        boost::filesystem::create_directory(path);
+        boost::filesystem::permissions(path, boost::filesystem::all_all | boost::filesystem::remove_perms);
+    }
+
+    operator const char*() const {
+        return path.c_str();
+    }
+
+    operator const std::string&() const {
+        return path.native();
+    }
+
+    boost::filesystem::path path;
 };
 
 struct TempFileFixture {
@@ -27,7 +52,6 @@ struct TempFileFixture {
     }
 
     ~TempFileFixture() {
-        std::cout <<"remove " <<path <<std::endl;
         boost::filesystem::remove(path);
     }
 
@@ -43,6 +67,6 @@ struct TempFileFixture {
 };
 
 
-BOOST_GLOBAL_FIXTURE(TempDirFixture)
+BOOST_GLOBAL_FIXTURE(TempBaseDirFixture)
 
 #endif

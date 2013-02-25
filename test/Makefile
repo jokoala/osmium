@@ -37,13 +37,17 @@ SCAN_DIRS = \
 PROBLEMS = t/geometry t/tags
 ALL_TESTS = $(shell find $(SCAN_DIRS) -name "*.cpp" | sed -e "s/.cpp$$/.o/")
 
-.PHONY: test_main clean
+.PHONY: test_main clean coverage
 
 ALL:	test_main
 	./test_main
 
 clean:
 	find . -name "*.o" -exec rm {} ";"
+	find . -name "*.gcda" -exec rm {} ";"
+	find . -name "*.gcno" -exec rm {} ";"
+	rm *.gcov
+	rm -rf coverage
 
 test_main: $(ALL_TESTS) test_main.o test_utils.o
 	$(CXX) $(LDFLAGS) $(LIB_SHAPE) $(LIB_OGR) $(LIB_GD) $(LIB_GEOS) $(LIB_XML2) -o $@ $^
@@ -53,3 +57,19 @@ test_main: $(ALL_TESTS) test_main.o test_utils.o
 
 %.test: %.o test_main.o test_utils.o
 	$(CXX) $(LDFLAGS) $(LIB_SHAPE) $(LIB_OGR) $(LIB_GD) $(LIB_GEOS) $(LIB_XML2) -o $@ $< test_main.o test_utils.o
+
+coverage:
+	export LDFLAGS="$(LDFLAGS) --coverage"
+	export CFLAGS="$(CFLAGS) --coverage"
+	lcov --zerocounters --directory .
+	make ALL
+	lcov --capture --directory . --base-directory . -o tests.info
+	#lcov --extract -o tests-programcoverage 
+	genhtml -o coverage tests.info
+
+coverage-gcov:
+	export LDFLAGS="$(LDFLAGS) --coverage"
+	export CFLAGS="$(CFLAGS) --coverage"
+	lcov --zerocounters --directory .
+	make ALL || echo "test errors"
+	find . -name "*.cpp" | xargs gcov -r

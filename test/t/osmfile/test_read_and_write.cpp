@@ -25,6 +25,8 @@ std::string example_file_content("Lorem ipsum dolor sit amet, consetetur sadipsc
 
 
 BOOST_AUTO_TEST_SUITE(OSMFile_Output)
+
+
 /* Helper function
  * Verify if the istream <inputfile> contains exactly the text <expected_content>
  */
@@ -96,6 +98,8 @@ BOOST_AUTO_TEST_CASE( write_to_xml_bz2_output_file ) {
 }
 
 BOOST_AUTO_TEST_SUITE_END()
+
+
 BOOST_AUTO_TEST_SUITE(OSMFile_Input)
 
 void read_from_fd_and_compare(int fd, std::string& expected_content) {
@@ -166,5 +170,31 @@ BOOST_AUTO_TEST_CASE( read_from_xml_bz2_file ) {
     file.close();
 }
 
+
+BOOST_AUTO_TEST_SUITE_END()
+BOOST_AUTO_TEST_SUITE(OSMFile_Errors)
+
+BOOST_AUTO_TEST_CASE( OSMFile_writingToReadonlyDirectory_shouldRaiseException ) {
+    TempDirFixture ro_dir("ro_dir");
+    ro_dir.create_ro();
+
+    Osmium::OSMFile file((ro_dir.path / "test.osm").c_str());
+    BOOST_CHECK_THROW( file.open_for_output(), Osmium::OSMFile::IOError);
+}
+
+BOOST_AUTO_TEST_CASE( OSMFile_readingNonexistingFile_shouldRaiseException ) {
+    TempFileFixture nonexisting_osm("nonexisting.osm");
+    Osmium::OSMFile file(nonexisting_osm);
+
+    BOOST_CHECK_THROW( file.open_for_input(), Osmium::OSMFile::IOError);
+}
+
+BOOST_AUTO_TEST_CASE( OSMFile_readingNonexistingFileWithGzip_shouldRaiseException ) {
+    TempFileFixture nonexisting_name("nonexisting.osm.gz");
+    Osmium::OSMFile file(nonexisting_name);
+
+    //BOOST_CHECK_THROW( file.open_for_input(), Osmium::OSMFile::IOError);
+    file.open_for_input();
+}
 
 BOOST_AUTO_TEST_SUITE_END()
