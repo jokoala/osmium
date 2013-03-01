@@ -46,8 +46,6 @@ clean:
 	find . -name "*.o" -exec rm {} ";"
 	find . -name "*.gcda" -exec rm {} ";"
 	find . -name "*.gcno" -exec rm {} ";"
-	rm *.gcov
-	rm -rf coverage
 
 test_main: $(ALL_TESTS) test_main.o test_utils.o
 	$(CXX) $(LDFLAGS) $(LIB_SHAPE) $(LIB_OGR) $(LIB_GD) $(LIB_GEOS) $(LIB_XML2) -o $@ $^
@@ -71,5 +69,7 @@ coverage-gcov:
 	export LDFLAGS="$(LDFLAGS) --coverage"
 	export CFLAGS="$(CFLAGS) --coverage"
 	lcov --zerocounters --directory .
-	make ALL || echo "test errors"
+	export CFLAGS="$(CFLAGS) --coverage" LDFLAGS="$(LDFLAGS) --coverage" && make ALL || echo "test errors"
 	find . -name "*.cpp" | xargs gcov -r
+	mkdir gcov || true
+	mv *.gcov gcov/
