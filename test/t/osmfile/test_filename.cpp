@@ -189,4 +189,15 @@ BOOST_AUTO_TEST_CASE(OSMFile_filenameWithoutSuffix_shouldReturnFilenameWithoutSu
     BOOST_CHECK_EQUAL(file2.filename_without_suffix(), "something_else");
 }
 
+BOOST_AUTO_TEST_CASE(OSMFile_filenameWithDefaultSuffix_shouldReturnCorrectFilenames) {
+    Osmium::OSMFile file("test.osm");
+    BOOST_CHECK_EQUAL(file.filename_with_default_suffix(), "test.osm");
+
+    file.encoding(Osmium::OSMFile::FileEncoding::PBF());
+    BOOST_CHECK_EQUAL(file.filename_with_default_suffix(), "test.osm.pbf");
+
+    file.encoding(Osmium::OSMFile::FileEncoding::XMLgz());
+    BOOST_CHECK_EQUAL(file.filename_with_default_suffix(), "test.osm.gz");
+}
+
 BOOST_AUTO_TEST_SUITE_END()
