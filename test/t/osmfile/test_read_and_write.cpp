@@ -23,6 +23,12 @@ std::string example_file_content("Lorem ipsum dolor sit amet, consetetur sadipsc
 
 #include <temp_file_fixture.hpp>
 
+// Disable the Boost.Test handling of SIGCHLD signals.
+#if defined(BOOST_POSIX_API)
+    #define DISABLE_SIGCHLD() signal(SIGCHLD, SIG_IGN)
+#else
+    #define DISABLE_SIGCHLD()
+#endif
 
 BOOST_AUTO_TEST_SUITE(OSMFile_Output)
 
@@ -174,27 +180,62 @@ BOOST_AUTO_TEST_CASE( read_from_xml_bz2_file ) {
 BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE(OSMFile_Errors)
 
-BOOST_AUTO_TEST_CASE( OSMFile_writingToReadonlyDirectory_shouldRaiseException ) {
+BOOST_AUTO_TEST_CASE( OSMFile_writingToReadonlyDirectory_shouldRaiseIOException ) {
     TempDirFixture ro_dir("ro_dir");
     ro_dir.create_ro();
 
     Osmium::OSMFile file((ro_dir.path / "test.osm").c_str());
-    BOOST_CHECK_THROW( file.open_for_output(), Osmium::OSMFile::IOError);
+    try {
+        file.open_for_output();
+        BOOST_ERROR( "open_for_output didn't raise IOError" );
+    } catch ( Osmium::OSMFile::IOError const& ex ) {
+        BOOST_CHECK_EQUAL( ex.filename(), (ro_dir.path / "test.osm").native() );
+        BOOST_CHECK_EQUAL( ex.system_errno(), 13 );  // errno 13: Permission denied
+    }
+}
+
+BOOST_AUTO_TEST_CASE( OSMFile_writingToReadonlyDirectoryWithGzip_shouldRaiseIOException ) {
+    DISABLE_SIGCHLD();
+    TempDirFixture ro_dir("ro_dir");
+    ro_dir.create_ro();
+
+    Osmium::OSMFile file((ro_dir.path / "test.osm.gz").c_str());
+    file.open_for_output();
+    try {
+        file.close();
+        BOOST_ERROR( "file.close() didn't raise IOError" );
+    } catch ( Osmium::OSMFile::IOError const& ex ) {
+        BOOST_CHECK_EQUAL( ex.filename(), (ro_dir.path / "test.osm.gz").native() );
+        BOOST_CHECK_EQUAL( ex.system_errno(), 0 ); // subprocess error has no valid errno code
+    }
 }
 
 BOOST_AUTO_TEST_CASE( OSMFile_readingNonexistingFile_shouldRaiseException ) {
     TempFileFixture nonexisting_osm("nonexisting.osm");
     Osmium::OSMFile file(nonexisting_osm);
 
-    BOOST_CHECK_THROW( file.open_for_input(), Osmium::OSMFile::IOError);
+    try {
+        file.open_for_input();
+        BOOST_ERROR( "open_for_input didn't raise IOError" );
+    } catch ( Osmium::OSMFile::IOError const& ex ) {
+        BOOST_CHECK_EQUAL( ex.filename(), (std::string&)nonexisting_osm );
+        BOOST_CHECK_EQUAL( ex.system_errno(), 2 );  // errno 2: No such file or directory
+    }
+
 }
 
-BOOST_AUTO_TEST_CASE( OSMFile_readingNonexistingFileWithGzip_shouldRaiseException ) {
-    TempFileFixture nonexisting_name("nonexisting.osm.gz");
-    Osmium::OSMFile file(nonexisting_name);
+BOOST_AUTO_TEST_CASE( OSMFile_readingNonexistingFileWithGzip_shouldRaiseIOException ) {
+    DISABLE_SIGCHLD();
+    TempFileFixture nonexisting_osm_gz("nonexisting.osm.gz");
+    Osmium::OSMFile file(nonexisting_osm_gz);
 
-    //BOOST_CHECK_THROW( file.open_for_input(), Osmium::OSMFile::IOError);
     file.open_for_input();
+    try {
+        file.close();
+    } catch ( Osmium::OSMFile::IOError const& ex ) {
+        BOOST_CHECK_EQUAL( ex.filename(), (std::string&)nonexisting_osm_gz );
+        BOOST_CHECK_EQUAL( ex.system_errno(), 0 );  // subprocess error has no valid errno code
+    }
 }
 
 BOOST_AUTO_TEST_SUITE_END()
