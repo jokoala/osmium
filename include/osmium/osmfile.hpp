@@ -100,13 +100,25 @@ namespace Osmium {
             ~IOError() throw() {
             }
 
+            /**
+             * IOError specific what method:
+             * Enhance error message by filename and error message if available
+             */
             virtual const char* what() const throw() {
-                std::string result = "Osmium::OSMFile::IOError: ";
-                result += filename();
-                result += ": ";
-                result += strerror(system_errno());
-
-                return result.c_str();
+                try {
+                    std::string result = std::runtime_error::what();
+                    result += ": ";
+                    if (!m_filename.empty()) {
+                        result += filename();
+                        result += ": ";
+                    }
+                    if (m_errno != 0) {
+                        result += strerror(m_errno);
+                    }
+                    return result.c_str();
+                } catch (...) {
+                    return std::runtime_error::what();
+                }
             }
 
             /**
@@ -568,7 +580,9 @@ namespace Osmium {
                 int status;
                 pid_t pid = waitpid(m_childpid, &status, 0);
                 if (pid < 0 || !WIFEXITED(status) || WEXITSTATUS(status) != 0) {
-                    throw IOError("Subprocess returned error", "", errno);
+                    // global variable errno doesn't contain a valid value,
+                    // so we better set errno=0
+                    throw IOError("Subprocess returned error", m_filename, 0);
                 }
                 m_childpid = 0;
             }
@@ -672,7 +686,7 @@ namespace Osmium {
         }
 
         std::string filename_without_suffix() const {
-            return m_filename.substr(m_filename.find_first_of('.')+1);
+            return m_filename.substr(0, m_filename.find_first_of('.'));
         }
 
         std::string filename_with_default_suffix() const {
