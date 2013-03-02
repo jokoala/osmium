@@ -79,7 +79,7 @@ BOOST_AUTO_TEST_CASE(Object_timestamp_convertsIsoFormatToTimestamp) {
     Osmium::OSM::Node obj;
 
     obj.timestamp("2013-03-01T11:00:00Z");
-    BOOST_CHECK_EQUAL(obj.timestamp(), 1362135600u);
+    BOOST_CHECK_EQUAL(obj.timestamp(), (time_t)1362135600u);
 }
 
 BOOST_AUTO_TEST_CASE(Object_timestampCalledWithInvalidFormat_throwsInvalidArgument) {
@@ -164,7 +164,7 @@ BOOST_AUTO_TEST_CASE(Object_setAttribute_shouldSetAttributesByName) {
     BOOST_CHECK_EQUAL(obj.id(), 12);
     BOOST_CHECK_EQUAL(obj.version(), 13u);
     BOOST_CHECK_EQUAL(obj.changeset(), 14);
-    BOOST_CHECK_EQUAL(obj.timestamp(), 1362135600u);
+    BOOST_CHECK_EQUAL(obj.timestamp(), (time_t)1362135600u);
     BOOST_CHECK_EQUAL(obj.uid(), 15);
     BOOST_CHECK_EQUAL(obj.user(), "L33t User");
     BOOST_CHECK_EQUAL(obj.visible(), false);
