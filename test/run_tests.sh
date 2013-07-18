@@ -41,20 +41,18 @@ TESTS_COMPILE_ERROR=0
 TESTS_FAILED=0
 TESTS_OK=0
 
-CFLAGS="$(geos-config --cflags) $(gdal-config --cflags) $CFLAGS"
-LIBS="$(geos-config --libs) $(gdal-config --libs) -lboost_regex -lboost_iostreams -lboost_filesystem -lboost_system"
+OPTS_CFLAGS="$(geos-config --cflags) $(gdal-config --cflags) $OPTS_CFLAGS"
+OPTS_LIBS="$(geos-config --libs) $(gdal-config --libs) -lboost_regex -lboost_iostreams -lboost_filesystem -lboost_system"
 
 test_file () {
     FILES="test_main.o test_utils.o $1"
-    #eval CFLAGS=`../get_options.sh --cflags $FILES`
-    #eval LIBS=`../get_options.sh --libs $FILES`
     echo -n "Checking $BOLD$1$NORM..."
-    if ! output=$($COMPILE $FILES $CFLAGS $LIBS $LDFLAGS -lboost_unit_test_framework 2>&1 )
+    if ! output=$($COMPILE $FILES $OPTS_CFLAGS $OPTS_LIBS -DBOOST_TEST_DYN_LINK $LDFLAGS -lboost_unit_test_framework 2>&1 )
     then
         echo "$DARKRED[COMPILE ERROR]$NORM"
         TESTS_COMPILE_ERROR=$(($TESTS_COMPILE_ERROR+1))
         echo "=========================="
-        echo $COMPILE $FILES $CFLAGS $LIBS $LDFLAGS -lboost_unit_test_framework
+        echo $COMPILE $FILES $OPTS_CFLAGS $OPTS_LIBS -DBOOST_TEST_DYN_LINK$LDFLAGS -lboost_unit_test_framework
         echo "--------------------------"
         echo "$output"
         echo "=========================="
@@ -78,12 +76,12 @@ setup() {
     if [ \( ! -e test_main.o \) -o \( test_main.cpp -nt test_main.o \) ]
     then
         echo "Compiling test runner"
-        $CXX -I../include -I. $CXXFLAGS -c test_main.cpp 
+        $CXX -I../include -I. $CXXFLAGS -DBOOST_TEST_DYN_LINK -c test_main.cpp 
     fi
     if [ \( ! -e test_utils.o \) -o \( test_utils.cpp -nt test_utils.o \) ]
     then
         echo "Compiling test helper"
-        $CXX -I../include -I. $CXXFLAGS -c test_utils.cpp
+        $CXX -I../include -I. $CXXFLAGS -DBOOST_TEST_DYN_LINK -c test_utils.cpp
     fi 
 }
 
