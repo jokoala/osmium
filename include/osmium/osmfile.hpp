@@ -31,6 +31,10 @@ You should have received a copy of the Licenses along with Osmium. If not, see
 #include <unistd.h>
 #include <boost/utility.hpp>
 
+#ifdef OSMIUM_USE_ZLIB
+    #include <zlib.h>
+#endif
+
 namespace Osmium {
 
     /**
@@ -330,12 +334,44 @@ namespace Osmium {
         /// File descriptor. -1 before the file is opened.
         int m_fd;
 
+        /// Read function to use 
+        ssize_t (OSMFile::* m_read)(void *, size_t) const;
+
+#ifdef OSMIUM_USE_ZLIB
+        /// zlib file handle
+        gzFile m_gzfile;
+#endif
+
         /**
          * Contains the child process id if a child was
          * created to uncompress data or for getting a
          * URL.
          */
         pid_t m_childpid;
+
+        /** 
+         * default read function: Read a number of bytes from the file descriptor m_fd
+         */
+        ssize_t read_from_fd(void *buffer, size_t size) const {
+            return read(m_fd, buffer, size);
+        }
+
+#ifdef OSMIUM_USE_ZLIB
+        /** 
+         * zlib read function: Read a  number of bytes from gzip compressed file
+         * m_gzfile
+         */
+        ssize_t read_from_gzip(void *buffer, size_t size) const {
+            BOOST_ASSERT(m_gzfile);
+
+            ssize_t ret = gzread(m_gzfile, buffer, size);
+            if (ret == -1) {
+                int dummy;
+                throw SystemError(gzerror(m_gzfile, &dummy), 0);
+            }
+            return ret;
+        }
+#endif
 
         /**
          * Fork and execute the given command in the child.
@@ -468,6 +504,9 @@ namespace Osmium {
             m_encoding(FileEncoding::PBF()),
             m_filename(filename),
             m_fd(-1),
+#ifdef OSMIUM_USE_ZLIB
+            m_gzfile(NULL),
+#endif
             m_childpid(0) {
 
             // stdin/stdout
@@ -545,6 +584,9 @@ namespace Osmium {
             m_encoding(orig.encoding()),
             m_filename(orig.filename()),
             m_fd(-1),
+#ifdef OSMIUM_USE_ZLIB
+            m_gzfile(NULL),
+#endif
             m_childpid(0) {
         }
 
@@ -555,6 +597,9 @@ namespace Osmium {
          */
         OSMFile& operator=(const OSMFile& orig) {
             m_fd       = -1;
+#ifdef OSMIUM_USE_ZLIB
+            m_gzfile   = NULL;
+#endif
             m_childpid = 0;
             m_type     = orig.type();
             m_encoding = orig.encoding();
@@ -571,6 +616,32 @@ namespace Osmium {
         }
 
         void close() {
+#ifdef OSMIUM_USE_ZLIB
+            if (m_gzfile) {
+                int res = gzclose(m_gzfile);
+                switch(res) {
+                    case Z_STREAM_ERROR:
+                        throw SystemError("STREAM ERROR", 0);
+                        break;
+
+                    case Z_ERRNO:
+                        throw SystemError("gzclose", errno);
+                        break;
+
+                    case Z_MEM_ERROR:
+                        throw SystemError("MEM ERROR", 0);
+                        break;
+
+                    case Z_BUF_ERROR:
+                        throw SystemError("BUF ERROR", 0);
+                        break;
+
+                    case Z_OK:
+                        break;
+                }
+                m_gzfile = NULL;
+            }
+#endif
             if (m_fd > 0) {
                 ::close(m_fd);
                 m_fd = -1;
@@ -696,11 +767,26 @@ namespace Osmium {
         }
 
         void open_for_input() {
+#ifdef OSMIUM_USE_ZLIB
+            if (m_encoding->decompress() == "zcat") {
+                m_gzfile = gzopen(m_filename.c_str(), "rb");
+                if (!m_gzfile) {
+                    throw SystemError("open "+m_filename, errno);
+                }
+                m_read = &Osmium::OSMFile::read_from_gzip;
+                return;
+            }
+#endif
             m_fd = m_encoding->decompress() == "" ? open_input_file_or_url() : execute(m_encoding->decompress(), 0);
+            m_read = &Osmium::OSMFile::read_from_fd;
         }
 
         void open_for_output() {
             m_fd = m_encoding->compress() == "" ? open_output_file() : execute(m_encoding->compress(), 1);
+        }
+
+        ssize_t read_input(void *buffer, size_t size) const {
+            return (this->*m_read)(buffer, size);
         }
 
     }; // class OSMFile

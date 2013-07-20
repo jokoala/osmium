@@ -102,6 +102,12 @@ osmium_toshape: osmium_toshape.cpp
 nodedensity: nodedensity.cpp
 	$(CXX) $(CXXFLAGS) $(CXXFLAGS_WARNINGS) -o $@ $< $(LDFLAGS) $(LIB_EXPAT) $(LIB_PBF) $(LIB_GD)
 
+benchmark: benchmark.cpp
+	$(CXX) $(CXXFLAGS) $(CXXFLAGS_WARNINGS) -o $@ $< $(LDFLAGS) $(LIB_EXPAT) $(LIB_PBF)
+
+benchmark_zlib: benchmark.cpp
+	$(CXX) $(CXXFLAGS) -DOSMIUM_USE_ZLIB $(CXXFLAGS_WARNINGS) -o $@ $< $(LDFLAGS) $(LIB_EXPAT) $(LIB_PBF)
+
 clean:
 	rm -f *.o core $(PROGRAMS)
 

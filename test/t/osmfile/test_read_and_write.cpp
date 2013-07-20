@@ -1,4 +1,3 @@
-#define BOOST_TEST_DYN_LINK
 #ifdef STAND_ALONE
 # define BOOST_TEST_MODULE Main
 #endif
@@ -14,6 +13,7 @@
 #include <boost/iostreams/filter/bzip2.hpp>
 #include <boost/filesystem.hpp>
 
+#define OSMIUM_USE_ZLIB
 #include <osmium/osmfile.hpp>
 
 std::string example_file_content("Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.\n");
