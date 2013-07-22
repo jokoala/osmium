@@ -26,6 +26,7 @@ You should have received a copy of the Licenses along with Osmium. If not, see
 #include <fcntl.h>
 #include <stdexcept>
 #include <string>
+#include <cstring>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -62,7 +63,7 @@ namespace Osmium {
 
             const char* what() const throw() {
                 std::string result = "Osmium::OSMFile::SystemError: ";
-                result += strerror(system_errno());
+                result += std::strerror(system_errno());
 
                 return result.c_str();
             }
@@ -113,7 +114,7 @@ namespace Osmium {
                         result += ": ";
                     }
                     if (m_errno != 0) {
-                        result += strerror(m_errno);
+                        result += std::strerror(m_errno);
                     }
                     return result.c_str();
                 } catch (...) {
