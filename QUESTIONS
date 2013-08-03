@@ -3,3 +3,10 @@ osm::object:
 
 osm::node:
 * really a good idea to be able to compare node pointers?
+
+osm::WayNode
+* only comparison < works!
+
+osm::Way
+* max_nodes_in_way nowhere defined
+* how should methods react if way is empty?
