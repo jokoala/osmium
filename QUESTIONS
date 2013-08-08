@@ -10,3 +10,17 @@ osm::WayNode
 osm::Way
 * max_nodes_in_way nowhere defined
 * how should methods react if way is empty?
+
+List Objects:
+* how should empty lists behave?
+
+osm::Bounds:
+* direct write access to values?
+
+
+Tests TODO:
+osm/area.hpp
+osm/position.hpp comparison
+osm/meta.hpp
+osm/segment.hpp
+osm/undirected_segment.hpp
