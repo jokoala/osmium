@@ -74,7 +74,7 @@ namespace Osmium {
          * before/after_areas() methods. Use init() and
          * final() instead.
          */
-        template <class THandler>
+        template <class TFile, class THandler>
         class Base : boost::noncopyable {
 
         public:
@@ -90,7 +90,7 @@ namespace Osmium {
 
         protected:
 
-            Base(const Osmium::OSMFile& file,
+            Base(const TFile& file,
                  THandler& handler) :
                 m_last_object_type(UNKNOWN),
                 m_file(file),
@@ -164,7 +164,7 @@ namespace Osmium {
                 return m_file.fd();
             }
 
-            const Osmium::OSMFile& file() const {
+            const TFile& file() const {
                 return m_file;
             }
 
@@ -218,7 +218,7 @@ namespace Osmium {
             /**
              * The OSMFile we opened this file with.
              */
-            Osmium::OSMFile m_file;
+            TFile m_file;
 
             /**
              * Handler we will call callbacks on.

@@ -58,13 +58,13 @@ namespace Osmium {
 
             if (file.encoding()->is_pbf()) {
 #ifdef OSMIUM_WITH_PBF_INPUT
-                input = static_cast<Osmium::Input::Base<T>*>(new Osmium::Input::PBF<T>(file, handler));
+                input = static_cast<Osmium::Input::Base<T>*>(new Osmium::Input::PBF<Osmium::OSMFile, T>(file, handler));
 #else
                 throw Osmium::OSMFile::FileEncodingNotSupported();
 #endif // OSMIUM_WITH_PBF_INPUT
             } else {
 #ifdef OSMIUM_WITH_XML_INPUT
-                input = static_cast<Osmium::Input::Base<T>*>(new Osmium::Input::XML<T>(file, handler));
+                input = static_cast<Osmium::Input::Base<T>*>(new Osmium::Input::XML<Osmium::OSMFile, T>(file, handler));
 #else
                 throw Osmium::OSMFile::FileEncodingNotSupported();
 #endif // OSMIUM_WITH_XML_INPUT

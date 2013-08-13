@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<osm version="0.6" generator="Osmium (http://wiki.openstreetmap.org/wiki/Osmium)">
+  <bounds minlon="-0.0076357" minlat="-0.0042670" maxlon="-0.0032339" maxlat="0.0153163"/>
+  <node id="1" version="1" timestamp="2012-02-29T12:13:44Z" uid="31337" user="haxor" changeset="123456" lat="-0.0041772" lon="-0.0032339"/>
+  <node id="2" version="1" timestamp="2012-02-29T12:13:44Z" uid="31337" user="haxor" changeset="123456" lat="0.0027399" lon="-0.0073662"/>
+  <node id="3" version="1" timestamp="2012-02-29T12:13:44Z" uid="31337" user="haxor" changeset="123456" lat="-0.0042670" lon="-0.0111391"/>
+  <node id="4" version="1" timestamp="2012-02-29T12:13:44Z" uid="31337" user="haxor" changeset="123456" lat="0.0094772" lon="-0.0076357"/>
+  <node id="5" version="1" timestamp="2012-02-29T12:13:44Z" uid="31337" user="haxor" changeset="123456" lat="0.0153163" lon="-0.0076357"/>
+  <node id="6" version="1" timestamp="2012-02-29T12:13:44Z" uid="31337" user="haxor" changeset="123456" lat="0.0057043" lon="-0.0035933">
+    <tag k="name" v="Osmium"/>
+    <tag k="place" v="locality"/>
+  </node>
+  <way id="7" version="1" timestamp="2012-02-29T12:13:44Z" uid="31337" user="haxor" changeset="123456">
+    <nd ref="3"/>
+    <nd ref="2"/>
+    <nd ref="1"/>
+    <nd ref="3"/>
+    <tag k="name" v="Liedenbrocksches Meer"/>
+    <tag k="natural" v="water"/>
+  </way>
+  <way id="8" version="1" timestamp="2012-02-29T12:13:44Z" uid="31337" user="haxor" changeset="123456">
+    <nd ref="5"/>
+    <nd ref="4"/>
+    <nd ref="2"/>
+    <tag k="name" v="Hansbach"/>
+    <tag k="waterway" v="stream"/>
+  </way>
+  <relation id="9" version="1" timestamp="2012-02-29T12:13:44Z" uid="31337" user="haxor" changeset="123456">
+    <member type="way" ref="7" role=""/>
+    <member type="way" ref="8" role=""/>
+    <member type="node" ref="6" role="nametag"/>
+    <tag k="name" v="Zum Mittelpunkt der Erde"/>
+    <tag k="ref" v="Verne01"/>
+    <tag k="route" v="foot"/>
+    <tag k="source" v="example"/>
+    <tag k="type" v="route"/>
+  </relation>
+</osm>

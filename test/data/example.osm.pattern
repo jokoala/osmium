@@ -1,0 +1,120 @@
+meta:
+  generator=Osmium (http://wiki.openstreetmap.org/wiki/Osmium)
+  bounds=(-0.0076357,-0.004267,-0.0032339,0.0153163)
+before_nodes
+node:
+  id=1
+  version=1
+  uid=31337
+  user=|haxor|
+  changeset=123456
+  timestamp=2012-02-29T12:13:44Z
+  tags: (count=0)
+  lon=-0.0032339
+  lat=-0.0041772
+node:
+  id=2
+  version=1
+  uid=31337
+  user=|haxor|
+  changeset=123456
+  timestamp=2012-02-29T12:13:44Z
+  tags: (count=0)
+  lon=-0.0073662
+  lat=0.0027399
+node:
+  id=3
+  version=1
+  uid=31337
+  user=|haxor|
+  changeset=123456
+  timestamp=2012-02-29T12:13:44Z
+  tags: (count=0)
+  lon=-0.0111391
+  lat=-0.0042670
+node:
+  id=4
+  version=1
+  uid=31337
+  user=|haxor|
+  changeset=123456
+  timestamp=2012-02-29T12:13:44Z
+  tags: (count=0)
+  lon=-0.0076357
+  lat=0.0094772
+node:
+  id=5
+  version=1
+  uid=31337
+  user=|haxor|
+  changeset=123456
+  timestamp=2012-02-29T12:13:44Z
+  tags: (count=0)
+  lon=-0.0076357
+  lat=0.0153163
+node:
+  id=6
+  version=1
+  uid=31337
+  user=|haxor|
+  changeset=123456
+  timestamp=2012-02-29T12:13:44Z
+  tags: (count=2)
+    k=|name| v=|Osmium|
+    k=|place| v=|locality|
+  lon=-0.0035933
+  lat=0.0057043
+after_nodes
+before_ways
+way:
+  id=7
+  version=1
+  uid=31337
+  user=|haxor|
+  changeset=123456
+  timestamp=2012-02-29T12:13:44Z
+  tags: (count=2)
+    k=|name| v=|Liedenbrocksches Meer|
+    k=|natural| v=|water|
+  node_count=4
+  nodes:
+    ref=3
+    ref=2
+    ref=1
+    ref=3
+way:
+  id=8
+  version=1
+  uid=31337
+  user=|haxor|
+  changeset=123456
+  timestamp=2012-02-29T12:13:44Z
+  tags: (count=2)
+    k=|name| v=|Hansbach|
+    k=|waterway| v=|stream|
+  node_count=3
+  nodes:
+    ref=5
+    ref=4
+    ref=2
+after_ways
+before_relations
+relation:
+  id=9
+  version=1
+  uid=31337
+  user=|haxor|
+  changeset=123456
+  timestamp=2012-02-29T12:13:44Z
+  tags: (count=5)
+    k=|name| v=|Zum Mittelpunkt der Erde|
+    k=|ref| v=|Verne01|
+    k=|route| v=|foot|
+    k=|source| v=|example|
+    k=|type| v=|route|
+  members: (count=3)
+    type=w ref=7 role=||
+    type=w ref=8 role=||
+    type=n ref=6 role=|nametag|
+after_relations
+final

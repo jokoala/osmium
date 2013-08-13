@@ -46,9 +46,10 @@ namespace Osmium {
         * Use the Osmium::Input::read() function instead.
         *
         * @tparam THandler A handler class (subclass of Osmium::Handler::Base).
+        * @tparam TFile A file class (subclass of Osmium::OSMFile).
         */
-        template <class THandler>
-        class XML : public Base<THandler> {
+        template <class TFile, class THandler>
+        class XML : public Base<TFile, THandler> {
 
         public:
 
@@ -58,8 +59,8 @@ namespace Osmium {
             * @param file OSMFile instance.
             * @param handler Instance of THandler.
             */
-            XML(const Osmium::OSMFile& file, THandler& handler) :
-                Base<THandler>(file, handler),
+            XML(const TFile& file, THandler& handler) :
+                Base<TFile, THandler>(file, handler),
                 m_current_object(NULL),
                 m_context(context_root),
                 m_last_context(context_root),
@@ -74,7 +75,7 @@ namespace Osmium {
 
                 XML_SetUserData(parser, this);
 
-                XML_SetElementHandler(parser, Osmium::Input::XML<THandler>::start_element_wrapper, Osmium::Input::XML<THandler>::end_element_wrapper);
+                XML_SetElementHandler(parser, Osmium::Input::XML<TFile, THandler>::start_element_wrapper, Osmium::Input::XML<TFile, THandler>::end_element_wrapper);
 
                 try {
                     int done;
@@ -135,11 +136,11 @@ namespace Osmium {
             bool m_in_delete_section;
 
             static void XMLCALL start_element_wrapper(void* data, const XML_Char* element, const XML_Char** attrs) {
-                static_cast<Osmium::Input::XML<THandler> *>(data)->start_element(element, attrs);
+                static_cast<Osmium::Input::XML<TFile, THandler> *>(data)->start_element(element, attrs);
             }
 
             static void XMLCALL end_element_wrapper(void* data, const XML_Char* element) {
-                static_cast<Osmium::Input::XML<THandler> *>(data)->end_element(element);
+                static_cast<Osmium::Input::XML<TFile, THandler> *>(data)->end_element(element);
             }
 
             void init_object(Osmium::OSM::Object& obj, const XML_Char** attrs) {

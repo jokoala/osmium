@@ -29,6 +29,7 @@ SCAN_DIRS = \
 	t/geometry \
 	t/osm \
 	t/handler \
+	t/input \
 	t/geometry_geos \
 	t/geometry_ogr \
 	t/osmfile \
